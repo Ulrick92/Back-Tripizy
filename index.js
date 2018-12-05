@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 mongoose.connect(
   "mongodb://localhost:27017/project",
-  { useNewUrlParser: true }
+  { useNewUrlParser: true, useCreateIndex: true }
 );
 const app = express();
 const port = 3000;
@@ -17,8 +17,10 @@ const UserModel = require("./models/User");
 
 // Routes
 const userRoutes = require("./routes/user");
+const travelRoutes = require("./routes/travelbook");
 
 app.use("/user", userRoutes);
+app.use("/travelbook", travelRoutes);
 
 app.all("*", function(req, res) {
   res.status(404).json({ error: "Not Found" });

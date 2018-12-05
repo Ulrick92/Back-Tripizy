@@ -16,7 +16,8 @@ const UserModel = mongoose.model("User", {
   nationality: String,
   email: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   adress: String,
   city: String,
@@ -24,11 +25,15 @@ const UserModel = mongoose.model("User", {
   travelbooks: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "TravelBook"
+      ref: "TravelBook",
+      default: []
     }
   ],
   interest_area: [String],
-  followers: [String],
+  followers: {
+    type: [String],
+    default: []
+  },
   token: String,
   hash: String,
   salt: String
