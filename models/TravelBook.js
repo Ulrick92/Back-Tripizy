@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const TravelBookModel = mongoose.model("TravelBook", {
   country: {
     type: [String],
@@ -27,6 +26,10 @@ const TravelBookModel = mongoose.model("TravelBook", {
       ref: "Step"
     }
   ],
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  },
   title: {
     type: String,
     minlength: 1,
@@ -38,11 +41,7 @@ const TravelBookModel = mongoose.model("TravelBook", {
     maxlength: 500
   },
   photos: [String],
-  like: Number,
-  creator: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
-  }
+  like: Number
 });
 
 module.exports = TravelBookModel;
