@@ -18,9 +18,11 @@ const TipsModel = require("./models/Tips");
 // Routes
 const userRoutes = require("./routes/user");
 const travelRoutes = require("./routes/travelbook");
+const TipsRoutes = require("./routes/tips");
 
 app.use("/user", userRoutes);
 app.use("/travelbook", travelRoutes);
+app.use("/tips", TipsRoutes);
 
 app.all("*", function(req, res) {
   res.status(404).json({ error: "Not Found" });
