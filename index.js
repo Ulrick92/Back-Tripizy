@@ -11,9 +11,9 @@ app.use(bodyParser.json());
 
 //  Initialisation des Models
 const UserModel = require("./models/User");
-// const TravelBookModel = require("./models/TravelBook");
-// const StepModel = require("./models/Step");
-// const TipsModel = require("./models/Tips");
+const TravelBookModel = require("./models/TravelBook");
+const StepModel = require("./models/Step");
+const TipsModel = require("./models/Tips");
 
 // Routes
 const userRoutes = require("./routes/user");

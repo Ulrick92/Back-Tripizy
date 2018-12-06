@@ -34,14 +34,18 @@ const TravelBookModel = mongoose.model("TravelBook", {
     type: String,
     minlength: 1,
     maxlength: 50,
-    required: true
+    required: true,
+    unique: true
   },
   description: {
     type: String,
     maxlength: 500
   },
   photos: [String],
-  like: Number
+  like: {
+    type: Number,
+    default: 0
+  }
 });
 
 module.exports = TravelBookModel;
