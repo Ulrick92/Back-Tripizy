@@ -87,8 +87,8 @@ router.post("/edit/:id", isAuthenticated, (req, res) => {
       if (err) {
         res.json(err.message);
       } else {
-        // res.redirect("/profile");
-        res.json(updatedUser);
+        res.redirect(`/${req.user._id}`);
+        // res.json(updatedUser);
       }
     }
   );
@@ -101,8 +101,8 @@ router.delete("/delete/:id", isAuthenticated, (req, res) => {
     if (err) {
       res.json(err);
     } else {
-      // res.redirect("/log_in");
-      res.json("user deleted");
+      res.redirect("/log_in");
+      // res.json("user deleted");
     }
   });
 });

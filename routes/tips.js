@@ -20,7 +20,8 @@ router.post("/publish", isAuthenticated, (req, res) => {
     tel,
     email,
     rate,
-    web_site
+    web_site,
+    id
   } = req.body;
   const newTips = new TipsModel({
     category,
@@ -38,24 +39,21 @@ router.post("/publish", isAuthenticated, (req, res) => {
     rate,
     web_site
   });
-  TipsModel.find({
-    title
-  }).exec(function(err, tips) {
-    if (tips.length > 0) {
-      res.status(400).json({
+  StepModel.findOne({ _id: id }).exec(function(err, stepfound) {
+    if (!stepfound) {
+      return res.status(400).json({
         error: {
-          message: "Ce tips n'existe déjà"
+          message: "Cette step n'existe pas"
         }
       });
-    } else {
-      newTips.save(function(err, new_tips) {
-        StepModel.tips.push(new_tips._id);
-        StepModel.save();
-        res.json({
-          new_tips
-        });
-      });
     }
+    newTips.save(function(err, tips) {
+      stepfound.tips.push(tips._id);
+      stepfound.save();
+      res.json({
+        message: "Le tips a bien été ajouté."
+      });
+    });
   });
 });
 
