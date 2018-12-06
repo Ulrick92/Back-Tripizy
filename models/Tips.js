@@ -11,7 +11,9 @@ const TipsModel = mongoose.model("Tips", {
   },
   price: {
     type: Number,
-    required: true
+    required: true,
+    min: 0,
+    maxlength: 100000
   },
   adress: {
     type: String,
@@ -31,10 +33,20 @@ const TipsModel = mongoose.model("Tips", {
   },
   photos: [String],
   videos: [String],
-  description: String,
+  description: {
+    type: String,
+    maxlength: 500
+  },
   tel: Number,
   email: String,
   rate: Number,
-  comments: [String],
-  web_site: String
+  comments: {
+    type: [String],
+    default: []
+  },
+  web_site: String,
+  step_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Step"
+  }
 });
