@@ -24,5 +24,9 @@ const StepModel = mongoose.model("Step", {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Tips"
     }
-  ]
+  ],
+  travelbook_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "TravelBook"
+  }
 });
