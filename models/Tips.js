@@ -39,7 +39,7 @@ const TipsModel = mongoose.model("Tips", {
   },
   tel: Number,
   email: String,
-  rate: Number,
+  rate: [Number],
   comments: {
     type: [String],
     default: []
@@ -50,3 +50,5 @@ const TipsModel = mongoose.model("Tips", {
     ref: "Step"
   }
 });
+
+module.exports = TipsModel;

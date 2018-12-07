@@ -13,7 +13,10 @@ const UserModel = mongoose.model("User", {
     type: Date,
     required: true
   },
-  nationality: String,
+  nationality: {
+    type: String,
+    require: true
+  },
   email: {
     type: String,
     required: true,
@@ -25,8 +28,7 @@ const UserModel = mongoose.model("User", {
   travelbooks: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "TravelBook",
-      default: []
+      ref: "TravelBook"
     }
   ],
   interest_area: [String],

@@ -18,10 +18,12 @@ const TipsModel = require("./models/Tips");
 // Routes
 const userRoutes = require("./routes/user");
 const travelRoutes = require("./routes/travelbook");
+const StepRoutes = require("./routes/step");
 const TipsRoutes = require("./routes/tips");
 
 app.use("/user", userRoutes);
 app.use("/travelbook", travelRoutes);
+app.use("/step", StepRoutes);
 app.use("/tips", TipsRoutes);
 
 app.all("*", function(req, res) {

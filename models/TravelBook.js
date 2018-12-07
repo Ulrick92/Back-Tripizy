@@ -2,23 +2,19 @@ const mongoose = require("mongoose");
 const TravelBookModel = mongoose.model("TravelBook", {
   country: {
     type: [String],
-    required: true
-  },
-  city: {
-    type: [String],
-    required: true
+    require: true
   },
   category: {
     type: [String],
-    required: true
+    require: true
   },
   start_date: {
     type: Date,
-    required: true
+    require: true
   },
   end_date: {
     type: Date,
-    required: true
+    require: true
   },
   steps: [
     {
@@ -34,8 +30,7 @@ const TravelBookModel = mongoose.model("TravelBook", {
     type: String,
     minlength: 1,
     maxlength: 50,
-    required: true,
-    unique: true
+    require: true
   },
   description: {
     type: String,

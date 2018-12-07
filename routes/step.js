@@ -14,7 +14,7 @@ router.post("/publish", isAuthenticated, (req, res) => {
     current_point,
     photos,
     videos,
-    id
+    travelbook_id
   } = req.body;
   const newStep = new StepModel({
     start_date,
@@ -25,7 +25,7 @@ router.post("/publish", isAuthenticated, (req, res) => {
     photos,
     videos
   });
-  TravelBookModel.findOne({ _id: id })
+  TravelBookModel.findById(travelbook_id)
     .populate("steps")
     .exec(function(err, travelbookfound) {
       if (!travelbookfound) {
@@ -35,6 +35,7 @@ router.post("/publish", isAuthenticated, (req, res) => {
           }
         });
       }
+      // Les step pourront avoir le même titre
       newStep.save(function(err, step) {
         travelbookfound.steps.push(step._id);
         travelbookfound.save();
@@ -94,7 +95,6 @@ router.post("/edit/:id", isAuthenticated, (req, res) => {
       if (err) {
         res.json(err.message);
       } else {
-        // res.redirect("/:id");
         res.json(updatedStep);
       }
     }
@@ -104,20 +104,36 @@ router.post("/edit/:id", isAuthenticated, (req, res) => {
 // Route Delete
 router.delete("/delete/:id", isAuthenticated, (req, res) => {
   const { id } = req.params;
-  StepModel.findByIdAndRemove(
-    { _id: ObjectId(id), travelbook_id: TravelBookModel },
-    function(err, obj) {
-      if (err) {
-        res.json(err);
-      }
-      if (!obj) {
-        res.status(404);
-        res.json("Nothing to delete");
-      } else {
-        res.json("Step deleted");
+  const { travelbook_id } = req.body;
+  TravelBookModel.findById(travelbook_id).exec((err, travrelbook) => {
+    for (let i = 0; i < travrelbook.steps.length; i++) {
+      if (String(travrelbook.steps[i]) === id) {
+        travrelbook.steps.splice(i, 1);
       }
     }
-  );
+    travrelbook.save(err => {
+      StepModel.findByIdAndRemove(id).exec((err, obj) => {
+        if (err) {
+          res.json(err);
+        }
+        if (!obj) {
+          res.status(404);
+          res.json("Nothing to delete");
+        } else {
+          res.json("Step deleted");
+        }
+      });
+    });
+  });
+});
+
+// Route List
+router.get("/", isAuthenticated, (req, res) => {
+  StepModel.find({})
+    .populate("tips")
+    .exec((err, step) => {
+      res.json(step);
+    });
 });
 
 module.exports = router;
