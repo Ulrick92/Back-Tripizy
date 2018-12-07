@@ -21,7 +21,7 @@ router.post("/publish", isAuthenticated, (req, res) => {
     email,
     rate,
     web_site,
-    id
+    step_id
   } = req.body;
   const newTips = new TipsModel({
     category,
@@ -39,22 +39,24 @@ router.post("/publish", isAuthenticated, (req, res) => {
     rate,
     web_site
   });
-  StepModel.findOne({ _id: id }).exec(function(err, stepfound) {
-    if (!stepfound) {
-      return res.status(400).json({
-        error: {
-          message: "Cette step n'existe pas"
+  StepModel.findById(step_id)
+    .exec(populate)
+    .exec((err, stepfound) => {
+      for (let i = 0; i < stepfound.tips.length; i++) {
+        if (stepfound.tips[i].compagny_name === compagny_name) {
+          return res.status(400).json({
+            error: "Ce tips a déjà été ajouté."
+          });
         }
-      });
-    }
-    newTips.save(function(err, tips) {
-      stepfound.tips.push(tips._id);
-      stepfound.save();
-      res.json({
-        message: "Le tips a bien été ajouté."
+      }
+      newTips.save(function(err, tips) {
+        stepfound.tips.push(tips._id);
+        stepfound.save();
+        res.json({
+          message: "Le tips a bien été ajouté."
+        });
       });
     });
-  });
 });
 
 // Route Read
@@ -116,7 +118,6 @@ router.post("/edit/:id", isAuthenticated, (req, res) => {
       if (err) {
         res.json(err.message);
       } else {
-        // res.redirect("/:id");
         res.json(updatedTips);
       }
     }
@@ -126,20 +127,27 @@ router.post("/edit/:id", isAuthenticated, (req, res) => {
 // Route Delete
 router.delete("/delete/:id", isAuthenticated, (req, res) => {
   const { id } = req.params;
-  TipsModel.findByIdAndRemove(
-    { _id: ObjsectId(id), step_id: StepModel },
-    function(err, obj) {
-      if (err) {
-        res.json(err);
-      }
-      if (!obj) {
-        res.status(404);
-        return next("Nothing to delete");
-      } else {
-        res.json("Tips deleted");
+  const { step_id } = req.body;
+  StepModel.findById(step_id).exec((err, stepfound) => {
+    for (let i = 0; i < stepfound.tips.length; i++) {
+      if (stepfound.tips[i] === id) {
+        stepfound.tips.splice(i, 1);
       }
     }
-  );
+    stepfound.save((err, obj) => {
+      TipsModel.findByIdAndRemove(id).exec((err, obj) => {
+        if (err) {
+          res.json(err);
+        }
+        if (!obj) {
+          res.status(404);
+          return next("Nothing to delete");
+        } else {
+          res.json("Tips deleted");
+        }
+      });
+    });
+  });
 });
 
 // Route List

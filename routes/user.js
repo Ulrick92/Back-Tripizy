@@ -67,44 +67,50 @@ router.post("/edit/:id", isAuthenticated, (req, res) => {
     interest_area
   } = req.body;
   const { id } = req.params;
-  UserModel.findByIdAndUpdate(
-    id,
-    {
-      $set: {
-        first_name,
-        last_name,
-        birthday,
-        nationality,
-        email,
-        adress,
-        city,
-        profile_pic,
-        interest_area
+  if (String(req.user._id) === id) {
+    UserModel.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          first_name,
+          last_name,
+          birthday,
+          nationality,
+          email,
+          adress,
+          city,
+          profile_pic,
+          interest_area
+        }
+      },
+      { new: true },
+      (err, updatedUser) => {
+        if (err) {
+          res.json(err.message);
+        } else {
+          res.json(updatedUser);
+        }
       }
-    },
-    { new: true },
-    (err, updatedUser) => {
-      if (err) {
-        res.json(err.message);
-      } else {
-        res.redirect(`/${req.user._id}`);
-        // res.json(updatedUser);
-      }
-    }
-  );
+    );
+  } else {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
 });
 
 // Route suppression de profil
 router.delete("/delete/:id", isAuthenticated, (req, res) => {
   const { id } = req.params;
-  UserModel.findByIdAndRemove(id, function(err) {
-    if (err) {
-      res.json(err);
-    } else {
-      res.redirect("/log_in");
-      // res.json("user deleted");
-    }
-  });
+  if (String(req.user._id) === id) {
+    UserModel.findByIdAndRemove(id, function(err) {
+      if (err) {
+        res.json(err);
+      } else {
+        res.json("user deleted");
+      }
+    });
+  } else {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
 });
 
 // Route consultation de profil

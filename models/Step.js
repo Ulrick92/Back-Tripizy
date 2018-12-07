@@ -3,19 +3,21 @@ const mongoose = require("mongoose");
 const StepModel = mongoose.model("Step", {
   start_date: {
     type: Date,
-    required: true
+    require: true
   },
   end_date: {
     type: Date,
-    required: true
+    require: true
   },
   title: {
     type: String,
-    required: true
+    require: true
+  },
+  city: {
+    type: [String],
+    require: true
   },
   description: String,
-  // starting_point : String,
-  // arrival_point : String,
   current_point: [Number],
   photos: [String],
   videos: [String],
@@ -30,3 +32,5 @@ const StepModel = mongoose.model("Step", {
     ref: "TravelBook"
   }
 });
+
+module.exports = StepModel;

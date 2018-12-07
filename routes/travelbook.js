@@ -28,24 +28,19 @@ router.post("/publish", isAuthenticated, (req, res) => {
     user_id: req.user,
     steps: []
   });
-  TravelBookModel.find({
-    title
-  }).exec(function(err, travelBooks) {
-    if (travelBooks.length > 0) {
-      res.status(400).json({
-        error: {
-          message: "Ce travelBook existe déjà"
-        }
-      });
-    } else {
-      newTravelBook.save(function(err, travelBook) {
-        req.user.travelbooks.push(travelBook._id);
-        req.user.save();
-        res.json({
-          travelBook
-        });
+  for (let i = 0; i < req.user.travelbooks.length; i++) {
+    if (req.user.travelbooks[i].title === title) {
+      return res.status(400).json({
+        error: "Ce travelbook a déjà été ajouté."
       });
     }
+  }
+  newTravelBook.save(function(err, travelBook) {
+    req.user.travelbooks.push(travelBook._id);
+    req.user.save();
+    res.json({
+      travelBook
+    });
   });
 });
 
@@ -100,7 +95,6 @@ router.post("/edit/:id", isAuthenticated, (req, res) => {
       if (err) {
         res.json(err.message);
       } else {
-        // res.redirect("/:id");
         res.json(updatedTravelBook);
       }
     }
@@ -110,12 +104,23 @@ router.post("/edit/:id", isAuthenticated, (req, res) => {
 // Route Delete
 router.delete("/delete/:id", isAuthenticated, (req, res) => {
   const { id } = req.params;
-  TravelBookModel.findByIdAndRemove(id, function(err) {
-    if (err) {
-      res.json(err);
-    } else {
-      res.json("TravelBook deleted");
+  for (let i = 0; i < req.user.travelbooks.length; i++) {
+    if (String(req.user.travelbooks[i]._id) === id) {
+      req.user.travelbooks.splice(i, 1);
     }
+  }
+  req.user.save(err => {
+    TravelBookModel.findByIdAndRemove(id).exec((err, obj) => {
+      if (err) {
+        res.json(err);
+      }
+      if (!obj) {
+        res.status(404);
+        res.json("Nothing to delete");
+      } else {
+        res.json("Travelbook deleted");
+      }
+    });
   });
 });
 
