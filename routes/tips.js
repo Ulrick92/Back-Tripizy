@@ -136,7 +136,7 @@ router.delete("/delete/:id", isAuthenticated, (req, res) => {
       }
     }
     stepfound.save((err, obj) => {
-      TipsModel.findByIdAndRemove(id).exec((err, obj) => {
+      TipsModel.findOneAndDelete(id).exec((err, obj) => {
         if (err) {
           res.json(err);
         }

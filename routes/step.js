@@ -114,7 +114,7 @@ router.delete("/delete/:id", isAuthenticated, (req, res) => {
       }
     }
     travrelbook.save(err => {
-      StepModel.findByIdAndRemove(id).exec((err, obj) => {
+      StepModel.findOneAndDelete(id).exec((err, obj) => {
         if (err) {
           res.json(err);
         }

@@ -101,7 +101,7 @@ router.post("/edit/:id", isAuthenticated, (req, res) => {
 router.delete("/delete/:id", isAuthenticated, (req, res) => {
   const { id } = req.params;
   if (String(req.user._id) === id) {
-    UserModel.findByIdAndRemove(id, function(err) {
+    UserModel.findOneAndDelete(id, function(err) {
       if (err) {
         res.json(err);
       } else {
