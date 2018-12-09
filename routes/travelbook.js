@@ -110,7 +110,7 @@ router.delete("/delete/:id", isAuthenticated, (req, res) => {
     }
   }
   req.user.save(err => {
-    TravelBookModel.findByIdAndRemove(id).exec((err, obj) => {
+    TravelBookModel.findOneAndDelete(id).exec((err, obj) => {
       if (err) {
         res.json(err);
       }
@@ -128,8 +128,14 @@ router.delete("/delete/:id", isAuthenticated, (req, res) => {
 router.get("/", isAuthenticated, (req, res) => {
   TravelBookModel.find({})
     .populate("user_id")
-    .exec((err, travelbook) => {
-      res.json(travelbook);
+    .exec((err, travelbookfound) => {
+      const travelbooks = [];
+      for (let i = 0; i < travelbookfound.length; i++) {
+        if (travelbookfound[i].steps.length > 0) {
+          travelbooks.push(travelbookfound[i]);
+        }
+      }
+      res.json(travelbooks);
     });
 });
 

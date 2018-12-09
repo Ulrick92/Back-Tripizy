@@ -17,7 +17,10 @@ const StepModel = mongoose.model("Step", {
     type: [String],
     require: true
   },
-  description: String,
+  description: {
+    type: String,
+    require: true
+  },
   current_point: [Number],
   photos: [String],
   videos: [String],

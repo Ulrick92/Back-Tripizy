@@ -115,18 +115,21 @@ router.delete("/delete/:id", isAuthenticated, (req, res) => {
 
 // Route consultation de profil
 router.get("/:id", isAuthenticated, (req, res) => {
-  UserModel.findById(req.params.id).exec((err, user) => {
-    if (err) {
-      res.status(400);
-      return res.json(err.message);
-    } else {
-      if (!user) {
-        res.status(404);
-        return res.json("User not found");
+  const { id } = req.params;
+  UserModel.findById(id)
+    .populate("travelbooks")
+    .exec((err, user) => {
+      if (err) {
+        res.status(400);
+        return res.json(err.message);
+      } else {
+        if (!user) {
+          res.status(404);
+          return res.json("User not found");
+        }
+        return res.json(user);
       }
-      return res.json(user);
-    }
-  });
+    });
 });
 
 module.exports = router;

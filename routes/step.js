@@ -23,7 +23,9 @@ router.post("/publish", isAuthenticated, (req, res) => {
     description,
     current_point,
     photos,
-    videos
+    videos,
+    travelbook_id,
+    tips: []
   });
   TravelBookModel.findById(travelbook_id)
     .populate("steps")

@@ -37,7 +37,8 @@ router.post("/publish", isAuthenticated, (req, res) => {
     tel,
     email,
     rate,
-    web_site
+    web_site,
+    step_id
   });
   StepModel.findById(step_id)
     .exec(populate)
