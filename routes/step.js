@@ -23,7 +23,9 @@ router.post("/publish", isAuthenticated, (req, res) => {
     description,
     current_point,
     photos,
-    videos
+    videos,
+    travelbook_id,
+    tips: []
   });
   TravelBookModel.findById(travelbook_id)
     .populate("steps")
@@ -112,7 +114,7 @@ router.delete("/delete/:id", isAuthenticated, (req, res) => {
       }
     }
     travrelbook.save(err => {
-      StepModel.findByIdAndRemove(id).exec((err, obj) => {
+      StepModel.findOneAndDelete(id).exec((err, obj) => {
         if (err) {
           res.json(err);
         }

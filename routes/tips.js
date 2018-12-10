@@ -37,7 +37,8 @@ router.post("/publish", isAuthenticated, (req, res) => {
     tel,
     email,
     rate,
-    web_site
+    web_site,
+    step_id
   });
   StepModel.findById(step_id)
     .exec(populate)
@@ -135,7 +136,7 @@ router.delete("/delete/:id", isAuthenticated, (req, res) => {
       }
     }
     stepfound.save((err, obj) => {
-      TipsModel.findByIdAndRemove(id).exec((err, obj) => {
+      TipsModel.findOneAndDelete(id).exec((err, obj) => {
         if (err) {
           res.json(err);
         }
