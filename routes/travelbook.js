@@ -126,13 +126,16 @@ router.delete("/delete/:id", isAuthenticated, (req, res) => {
 
 // Route List
 router.get("/", isAuthenticated, (req, res) => {
-  TravelBookModel.find({})
+  TravelBookModel.find({ user_id: { $ne: req.user._id } })
     .populate("user_id")
     .exec((err, travelbookfound) => {
       const travelbooks = [];
       for (let i = 0; i < travelbookfound.length; i++) {
         if (travelbookfound[i].steps.length > 0) {
           travelbooks.push(travelbookfound[i]);
+          // if (travelbookfound[i].user_id !== req.user._id) {
+          //   travelbooks.push(travelbookfound[i]);
+          // }
         }
       }
       res.json(travelbooks);
