@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const StepModel = require("../models/Step");
 const TravelBookModel = require("../models/TravelBook");
+const uploadPictures = require("../middlewares/uploadPictures");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const ObjectId = require("mongoose").Types.ObjectId;
 

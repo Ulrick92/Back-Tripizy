@@ -2,6 +2,7 @@ const router = require("express").Router();
 const TravelBookModel = require("../models/TravelBook");
 const UserModel = require("../models/User");
 const isAuthenticated = require("../middlewares/isAuthenticated");
+const uploadPictures = require("../middlewares/uploadPictures");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 // Route Create
