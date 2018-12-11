@@ -5,7 +5,7 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 // Route Create
-router.post("/publish", isAuthenticated, (req, res) => {
+router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
   const {
     start_date,
     end_date,
@@ -14,7 +14,8 @@ router.post("/publish", isAuthenticated, (req, res) => {
     current_point,
     photos,
     videos,
-    travelbook_id
+    travelbook_id,
+    city
   } = req.body;
   const newStep = new StepModel({
     start_date,
@@ -25,6 +26,7 @@ router.post("/publish", isAuthenticated, (req, res) => {
     photos,
     videos,
     travelbook_id,
+    city,
     tips: []
   });
   TravelBookModel.findById(travelbook_id)
@@ -68,7 +70,7 @@ router.get("/:id", isAuthenticated, (req, res) => {
 });
 
 // Route Update
-router.post("/edit/:id", isAuthenticated, (req, res) => {
+router.post("/edit/:id", isAuthenticated, uploadPictures, (req, res) => {
   const { id } = req.params;
   const {
     start_date,
@@ -77,7 +79,8 @@ router.post("/edit/:id", isAuthenticated, (req, res) => {
     description,
     current_point,
     photos,
-    videos
+    videos,
+    city
   } = req.body;
   StepModel.findByIdAndUpdate(
     id,
@@ -89,7 +92,8 @@ router.post("/edit/:id", isAuthenticated, (req, res) => {
         description,
         current_point,
         photos,
-        videos
+        videos,
+        city
       }
     },
     { new: true },

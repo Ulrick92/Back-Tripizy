@@ -5,10 +5,9 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 // Route Create
-router.post("/publish", isAuthenticated, (req, res) => {
+router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
   const {
     country,
-    city,
     category,
     start_date,
     end_date,
@@ -18,7 +17,6 @@ router.post("/publish", isAuthenticated, (req, res) => {
   } = req.body;
   const newTravelBook = new TravelBookModel({
     country,
-    city,
     category,
     start_date,
     end_date,
@@ -64,11 +62,10 @@ router.get("/:id", isAuthenticated, (req, res) => {
 });
 
 // Route Update
-router.post("/edit/:id", isAuthenticated, (req, res) => {
+router.post("/edit/:id", isAuthenticated, uploadPictures, (req, res) => {
   const { id } = req.params;
   const {
     country,
-    city,
     category,
     start_date,
     end_date,
@@ -81,7 +78,6 @@ router.post("/edit/:id", isAuthenticated, (req, res) => {
     {
       $set: {
         country,
-        city,
         category,
         start_date,
         end_date,
@@ -126,13 +122,15 @@ router.delete("/delete/:id", isAuthenticated, (req, res) => {
 
 // Route List
 router.get("/", isAuthenticated, (req, res) => {
-  TravelBookModel.find({ user_id: { $ne: req.user._id } })
+  // Le user ne verra pas ses travelBook dans la liste
+  TravelBookModel.find({ user_id: { $ne: req.user._id } }) // $ne => not equal
     .populate("user_id")
     .exec((err, travelbookfound) => {
       const travelbooks = [];
       for (let i = 0; i < travelbookfound.length; i++) {
         if (travelbookfound[i].steps.length > 0) {
           travelbooks.push(travelbookfound[i]);
+          // Le user ne verra pas ses travelBook dans la liste (ancienne méthode)
           // if (travelbookfound[i].user_id !== req.user._id) {
           //   travelbooks.push(travelbookfound[i]);
           // }
