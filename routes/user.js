@@ -7,7 +7,7 @@ const UserModel = require("../models/User.js");
 const TravelbookModel = require("../models/TravelBook");
 
 // Route d'enregistrement
-router.post("/sign_up", (req, res) => {
+router.post("/sign_up", uploadPictures, (req, res) => {
   const token = uid2(64);
   const salt = uid2(64);
   const hash = SHA256(req.body.password + salt).toString(encBase64);
@@ -19,12 +19,15 @@ router.post("/sign_up", (req, res) => {
     hash: hash,
     first_name: req.body.first_name,
     last_name: req.body.last_name,
-    nationality: req.body.nationality,
     birthday: req.body.birthday,
     adress: req.body.adress,
     city: req.body.city,
     profile_pic: req.body.profile_pic,
-    interest_area: req.body.interest_area
+    interest_area: req.body.interest_area,
+    nationality: {
+      country_name: req.body.country_name,
+      country_flag: req.body.country_flag
+    }
   });
   user.save((err, user) => {
     if (err) {
@@ -54,17 +57,17 @@ router.post("/log_in", (req, res) => {
 });
 
 // Route modification de profil
-router.post("/edit/:id", isAuthenticated, (req, res) => {
+router.post("/edit/:id", isAuthenticated, uploadPictures, (req, res) => {
   const {
     first_name,
     last_name,
     birthday,
-    nationality,
     email,
     adress,
     city,
     profile_pic,
-    interest_area
+    interest_area,
+    nationality: { country_name, country_flag }
   } = req.body;
   const { id } = req.params;
   if (String(req.user._id) === id) {
@@ -75,12 +78,15 @@ router.post("/edit/:id", isAuthenticated, (req, res) => {
           first_name,
           last_name,
           birthday,
-          nationality,
           email,
           adress,
           city,
           profile_pic,
-          interest_area
+          interest_area,
+          nationality: {
+            country_name,
+            country_flag
+          }
         }
       },
       { new: true },

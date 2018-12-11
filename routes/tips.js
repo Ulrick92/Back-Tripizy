@@ -5,7 +5,7 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 const ObjsectId = require("mongoose").Types.ObjectId;
 
 // Route Create
-router.post("/publish", isAuthenticated, (req, res) => {
+router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
   const {
     category,
     compagny_name,
@@ -78,7 +78,7 @@ router.get("/:id", isAuthenticated, (req, res) => {
 });
 
 // Route Update
-router.post("/edit/:id", isAuthenticated, (req, res) => {
+router.post("/edit/:id", isAuthenticated, uploadPictures, (req, res) => {
   const { id } = req.params;
   const {
     category,

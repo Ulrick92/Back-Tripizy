@@ -14,8 +14,14 @@ const UserModel = mongoose.model("User", {
     required: true
   },
   nationality: {
-    type: String,
-    require: true
+    country_name: {
+      type: String,
+      required: true
+    },
+    country_flag: {
+      type: String,
+      required: true
+    }
   },
   email: {
     type: String,
