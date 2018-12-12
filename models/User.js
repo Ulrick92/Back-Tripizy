@@ -13,7 +13,7 @@ const UserModel = mongoose.model("User", {
     type: Date
   },
   nationality: {
-    type: String,
+    type: Number,
     required: true
   },
   email: {
