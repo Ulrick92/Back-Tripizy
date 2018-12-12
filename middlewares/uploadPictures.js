@@ -1,3 +1,5 @@
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 // Importation de Cloudinary
 const cloudinary = require("cloudinary");
 // Configuration de Cloudinary
