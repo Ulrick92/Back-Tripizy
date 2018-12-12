@@ -8,7 +8,8 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-
+const mongoose = require("mongoose");
+const multer = require("multer");
 /*
 Le package `helmet` est une collection de protections contre certaines
 vulnérabilités HTTP
@@ -29,7 +30,7 @@ mongoose.connect(
 );
 
 const port = 3000;
-app.use(bodyParser.json({ limit: "50mb" })); // L'upload est fixée à 50mb maximum (pour l'envoi de fichiers)
+app.use(bodyParser.json({ limit: "150mb" })); // L'upload est fixée à 50mb maximum (pour l'envoi de fichiers)
 
 /*
 `Cross-Origin Resource Sharing` est un mechanisme permettant d'autoriser les
