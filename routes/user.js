@@ -6,6 +6,7 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 const uploadPictures = require("../middlewares/uploadPictures");
 const UserModel = require("../models/User.js");
 const TravelbookModel = require("../models/TravelBook");
+const multer = require("multer");
 let upload = multer({ dest: "uploads/" });
 
 // Route d'enregistrement
@@ -134,7 +135,7 @@ router.get("/:id", isAuthenticated, (req, res) => {
 });
 
 // Route upload
-app.post(
+router.post(
   "/upload",
   isAuthenticated,
   upload.none(),

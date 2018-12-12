@@ -8,8 +8,7 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const mongoose = require("mongoose");
-const multer = require("multer");
+
 /*
 Le package `helmet` est une collection de protections contre certaines
 vulnérabilités HTTP
