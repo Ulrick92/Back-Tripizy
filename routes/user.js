@@ -40,20 +40,23 @@ router.post("/sign_up", uploadPictures, (req, res) => {
 
 // Route de connexion
 router.post("/log_in", (req, res) => {
-  UserModel.findOne({ email: req.body.email }).exec((err, user) => {
-    if (err) return res.json(err.message);
-    if (user) {
-      if (
-        SHA256(req.body.password + user.salt).toString(encBase64) === user.hash
-      ) {
-        return res.json(user);
+  UserModel.findOne({ email: req.body.email })
+    .populate("travelbooks")
+    .exec((err, user) => {
+      if (err) return res.json(err.message);
+      if (user) {
+        if (
+          SHA256(req.body.password + user.salt).toString(encBase64) ===
+          user.hash
+        ) {
+          return res.json(user);
+        } else {
+          return res.status(401).json({ error: "Unauthorized" });
+        }
       } else {
-        return res.status(401).json({ error: "Unauthorized" });
+        return res.json("User not found");
       }
-    } else {
-      return res.json("User not found");
-    }
-  });
+    });
 });
 
 // Route modification de profil
