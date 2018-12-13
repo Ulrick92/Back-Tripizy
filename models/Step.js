@@ -6,21 +6,15 @@ const StepModel = mongoose.model("Step", {
     require: true
   },
   end_date: {
-    type: Date,
-    require: true
+    type: Date
   },
   title: {
-    type: String,
-    require: true
+    type: String
   },
   city: {
-    type: [String],
-    require: true
+    type: [String]
   },
-  description: {
-    type: String,
-    require: true
-  },
+  description: String,
   current_point: [Number],
   photos: [String],
   videos: [String],
