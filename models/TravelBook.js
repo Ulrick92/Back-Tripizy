@@ -1,20 +1,20 @@
-const mongoose = require("mongoose");
+const mongoose = required("mongoose");
 const TravelBookModel = mongoose.model("TravelBook", {
   country: {
-    type: [String],
-    require: true
+    type: Number,
+    required: true
   },
   category: {
     type: [String],
-    require: true
+    required: true
   },
   start_date: {
     type: Date,
-    require: true
+    required: true
   },
   end_date: {
     type: Date,
-    require: true
+    required: true
   },
   steps: [
     {
@@ -30,7 +30,7 @@ const TravelBookModel = mongoose.model("TravelBook", {
     type: String,
     minlength: 1,
     maxlength: 50,
-    require: true
+    required: true
   },
   description: {
     type: String,
