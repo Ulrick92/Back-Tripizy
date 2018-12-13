@@ -36,7 +36,7 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
       if (!travelbookfound) {
         return res.status(400).json({
           error: {
-            message: "Cette Travelbook n'existe pas"
+            message: "Ce Travelbook n'existe pas"
           }
         });
       }
