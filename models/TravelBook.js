@@ -1,4 +1,4 @@
-const mongoose = required("mongoose");
+const mongoose = require("mongoose");
 const TravelBookModel = mongoose.model("TravelBook", {
   country: {
     type: Number,
