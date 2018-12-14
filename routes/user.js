@@ -6,8 +6,8 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 const uploadPictures = require("../middlewares/uploadPictures");
 const UserModel = require("../models/User.js");
 const TravelbookModel = require("../models/TravelBook");
-const multer = require("multer");
-let upload = multer({ dest: "uploads/" });
+// const multer = require("multer");
+// let upload = multer({ dest: "uploads/" });
 
 // Route d'enregistrement
 router.post("/sign_up", uploadPictures, (req, res) => {
@@ -27,7 +27,7 @@ router.post("/sign_up", uploadPictures, (req, res) => {
     city: req.body.city,
     profile_pic: req.body.profile_pic,
     interest_area: req.body.interest_area,
-    nationality: req.body.nationality
+    nationality: Number(req.body.nationality)
   });
   user.save((err, user) => {
     if (err) {
@@ -138,18 +138,18 @@ router.get("/:id", isAuthenticated, (req, res) => {
 });
 
 // Route upload
-router.post(
-  "/upload",
-  isAuthenticated,
-  upload.none(),
-  uploadPictures,
-  (req, res) => {
-    console.log(req.pictures);
-    req.user.save((err, user) => {
-      user.profile_pic = req.pictures;
-      res.json("L'image à bien été envoyée");
-    });
-  }
-);
+// router.post(
+//   "/upload",
+//   isAuthenticated,
+//   upload.none(),
+//   uploadPictures,
+//   (req, res) => {
+//     console.log(req.pictures);
+//     req.user.save((err, user) => {
+//       user.profile_pic = req.pictures;
+//       res.json("L'image à bien été envoyée");
+//     });
+//   }
+// );
 
 module.exports = router;

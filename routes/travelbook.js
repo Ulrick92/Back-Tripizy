@@ -17,7 +17,7 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
     photos
   } = req.body;
   const newTravelBook = new TravelBookModel({
-    country,
+    country: Number(country),
     category,
     start_date,
     end_date,
@@ -34,6 +34,7 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
       });
     }
   }
+  console.log(newTravelBook);
   newTravelBook.save(function(err, travelBook) {
     console.log("eror", travelBook);
     req.user.travelbooks.push(travelBook._id);
