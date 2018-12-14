@@ -32,7 +32,7 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
     city,
     start_date,
     end_date,
-    photos: req.pictures,
+    photos: [req.pictures[0].secure_url],
     videos,
     description,
     tel,
@@ -52,11 +52,26 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
         }
       }
       newTips.save(function(err, tips) {
-        stepfound.tips.push(tips._id);
-        stepfound.save();
-        res.json({
-          message: "Le tips a bien été ajouté."
-        });
+        if (err) {
+          console.log("error", err);
+          res.status(400).json({
+            message: "An error occurred"
+          });
+        } else {
+          stepfound.tips.push(tips._id);
+          stepfound.save(err => {
+            if (err) {
+              console.log("error", err);
+              res.status(400).json({
+                message: "An error occurred"
+              });
+            } else {
+              res.json({
+                message: "Le tips a bien été ajouté."
+              });
+            }
+          });
+        }
       });
     });
 });

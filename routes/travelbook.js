@@ -34,7 +34,6 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
       });
     }
   }
-  console.log(newTravelBook);
   newTravelBook.save(function(err, travelBook) {
     if (err) {
       console.log("error", err);
