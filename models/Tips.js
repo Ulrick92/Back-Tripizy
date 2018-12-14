@@ -5,19 +5,17 @@ const TipsModel = mongoose.model("Tips", {
     type: String,
     required: true
   },
-  compagny_name: {
+  company_name: {
     type: String,
     required: true
   },
   price: {
     type: Number,
-    required: true,
     min: 0,
     maxlength: 100000
   },
   adress: {
-    type: String,
-    required: true
+    type: String
   },
   city: {
     type: String,

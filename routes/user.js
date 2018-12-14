@@ -25,7 +25,7 @@ router.post("/sign_up", uploadPictures, (req, res) => {
     birthday: req.body.birthday,
     adress: req.body.adress,
     city: req.body.city,
-    profile_pic: req.body.profile_pic,
+    profile_pic: req.pictures,
     interest_area: req.body.interest_area,
     nationality: Number(req.body.nationality)
   });

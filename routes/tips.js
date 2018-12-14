@@ -9,7 +9,7 @@ const ObjsectId = require("mongoose").Types.ObjectId;
 router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
   const {
     category,
-    compagny_name,
+    company_name,
     price,
     adress,
     city,
@@ -26,13 +26,13 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
   } = req.body;
   const newTips = new TipsModel({
     category,
-    compagny_name,
+    company_name,
     price,
     adress,
     city,
     start_date,
     end_date,
-    photos,
+    photos: req.pictures,
     videos,
     description,
     tel,
@@ -45,7 +45,7 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
     .exec(populate)
     .exec((err, stepfound) => {
       for (let i = 0; i < stepfound.tips.length; i++) {
-        if (stepfound.tips[i].compagny_name === compagny_name) {
+        if (stepfound.tips[i].company_name === company_name) {
           return res.status(400).json({
             error: "Ce tips a déjà été ajouté."
           });
@@ -83,7 +83,7 @@ router.post("/edit/:id", isAuthenticated, uploadPictures, (req, res) => {
   const { id } = req.params;
   const {
     category,
-    compagny_name,
+    company_name,
     price,
     adress,
     city,
@@ -101,7 +101,7 @@ router.post("/edit/:id", isAuthenticated, uploadPictures, (req, res) => {
     {
       $set: {
         category,
-        compagny_name,
+        company_name,
         price,
         adress,
         city,

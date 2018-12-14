@@ -23,7 +23,7 @@ const UserModel = mongoose.model("User", {
   },
   adress: String,
   city: String,
-  profile_pic: String,
+  profile_pic: [String],
   travelbooks: [
     {
       type: mongoose.Schema.Types.ObjectId,
