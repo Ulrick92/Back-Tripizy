@@ -36,12 +36,26 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
   }
   console.log(newTravelBook);
   newTravelBook.save(function(err, travelBook) {
-    console.log("eror", travelBook);
-    req.user.travelbooks.push(travelBook._id);
-    req.user.save();
-    res.json({
-      travelBook
-    });
+    if (err) {
+      console.log("error", err);
+      res.status(400).json({
+        message: "An error occurred"
+      });
+    } else {
+      req.user.travelbooks.push(travelBook._id);
+      req.user.save(err => {
+        if (err) {
+          console.log("error", err);
+          res.status(400).json({
+            message: "An error occurred"
+          });
+        } else {
+          res.json({
+            travelBook
+          });
+        }
+      });
+    }
   });
 });
 
