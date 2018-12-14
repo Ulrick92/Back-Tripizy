@@ -27,7 +27,7 @@ const uploadPictures = (req, res, next) => {
         file,
         {
           // J'assigne un dossier spécifique dans Cloudinary pour chaque utilisateur
-          public_id: `tripizy/${req.user._id}/${name}`
+          public_id: `trip/${name}`
         },
         (error, result) => {
           console.log(error, result);
