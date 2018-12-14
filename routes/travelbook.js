@@ -23,7 +23,7 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
     end_date,
     title,
     description,
-    photos: req.pictures,
+    photos: [req.pictures[0].secure_url],
     user_id: req.user,
     steps: []
   });
