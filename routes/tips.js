@@ -42,7 +42,7 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
     step_id
   });
   StepModel.findById(step_id)
-    .exec(populate)
+    .populate("tips")
     .exec((err, stepfound) => {
       for (let i = 0; i < stepfound.tips.length; i++) {
         if (stepfound.tips[i].company_name === company_name) {
