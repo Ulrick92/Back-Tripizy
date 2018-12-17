@@ -119,7 +119,6 @@ router.delete("/delete/:id", isAuthenticated, (req, res) => {
 
 // Route consultation de profil
 router.get("/:id", isAuthenticated, (req, res) => {
-  console.log("fouiny babe");
   const { id } = req.params;
   UserModel.findById(id)
     .populate("travelbooks")
