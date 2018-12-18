@@ -156,4 +156,18 @@ router.get("/", isAuthenticated, (req, res) => {
     });
 });
 
+// Route Mytrips
+router.get("/mytrips", isAuthenticated, (req, res) => {
+  // Le user verra que ses travelBook dans la liste
+  TravelBookModel.find({ user_id: { $ne: !req.user._id } }) // $ne => not equal
+    .populate("user_id")
+    .exec((err, travelbookfound) => {
+      if (err) {
+        res.json(err);
+      } else {
+        res.json(travelbookfound);
+      }
+    });
+});
+
 module.exports = router;
