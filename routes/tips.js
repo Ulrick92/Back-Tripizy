@@ -169,7 +169,17 @@ router.delete("/delete/:id", isAuthenticated, (req, res) => {
 
 // Route List
 router.get("/", isAuthenticated, (req, res) => {
-  TipsModel.find({}).exec((err, tips) => {
+  const filter = {};
+  if (req.query.city) {
+    filter.city = { $regex: req.query.city, $options: "i" };
+  }
+  if (req.query.company_name) {
+    filter.company_name = { $regex: req.query.company_name, $options: "i" };
+  }
+  if (req.query.category) {
+    filter.category = { $regex: req.query.category, $options: "i" };
+  }
+  TipsModel.find(filter).exec((err, tips) => {
     res.json(tips);
   });
 });
