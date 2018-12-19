@@ -22,7 +22,7 @@ router.post("/sign_up", uploadPictures, (req, res) => {
     hash: hash,
     first_name: req.body.first_name,
     last_name: req.body.last_name,
-    birthday: req.body.birthday,
+    birthday: new Date(req.body.birthday),
     adress: req.body.adress,
     city: req.body.city,
     profile_pic: [req.pictures[0].secure_url],
@@ -136,6 +136,22 @@ router.get("/:id", isAuthenticated, (req, res) => {
     });
 });
 
+router.get("/", isAuthenticated, (req, res) => {
+  UserModel.findById(req.user._id)
+    .populate("travelbooks")
+    .exec((err, userFound) => {
+      if (err) {
+        res.status(400);
+        return res.json(err.message);
+      } else {
+        if (!userFound) {
+          res.status(404);
+          return res.json("User not found");
+        }
+        return res.json(userFound);
+      }
+    });
+});
 // Route upload
 // router.post(
 //   "/upload",
