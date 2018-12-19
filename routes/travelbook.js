@@ -61,10 +61,7 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
 // Route Mytrips
 router.get("/mytrips", isAuthenticated, (req, res) => {
   // Le user verra que ses travelBook dans la liste
-
-  console.log("my trips routes");
-
-  TravelBookModel.find({ user_id: req.user._id }) // $ne => not equal
+  TravelBookModel.find({ user_id: req.user._id })
     .populate("user_id")
     .exec((err, travelbookfound) => {
       if (err) {
