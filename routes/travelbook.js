@@ -58,6 +58,24 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
   });
 });
 
+// Route Mytrips
+router.get("/mytrips", isAuthenticated, (req, res) => {
+  // Le user verra que ses travelBook dans la liste
+
+  console.log("my trips routes");
+
+  TravelBookModel.find({ user_id: req.user._id }) // $ne => not equal
+    .populate("user_id")
+    .exec((err, travelbookfound) => {
+      if (err) {
+        console.log("error mytrips");
+        console.log(err.message);
+        res.json(err);
+      } else {
+        res.json(travelbookfound);
+      }
+    });
+});
 // Route Read
 router.get("/:id", isAuthenticated, (req, res) => {
   const { id } = req.params;
@@ -139,6 +157,7 @@ router.delete("/delete/:id", isAuthenticated, (req, res) => {
 // Route List
 router.get("/", isAuthenticated, (req, res) => {
   // Le user ne verra pas ses travelBook dans la liste
+  console.log("base travelbook route");
   TravelBookModel.find({ user_id: { $ne: req.user._id } }) // $ne => not equal
     .populate("user_id")
     .exec((err, travelbookfound) => {
@@ -153,20 +172,6 @@ router.get("/", isAuthenticated, (req, res) => {
         }
       }
       res.json(travelbooks);
-    });
-});
-
-// Route Mytrips
-router.get("/mytrips", isAuthenticated, (req, res) => {
-  // Le user verra que ses travelBook dans la liste
-  TravelBookModel.find({ user_id: req.user._id }) // $ne => not equal
-    .populate("user_id")
-    .exec((err, travelbookfound) => {
-      if (err) {
-        res.json(err);
-      } else {
-        res.json(travelbookfound);
-      }
     });
 });
 
