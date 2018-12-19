@@ -58,6 +58,21 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
   });
 });
 
+// Route checktitle
+router.get("/title/:title", isAuthenticated, (req, res) => {
+  // Le user verra que ses travelBook dans la liste
+
+  console.log("check title routes");
+  for (let i = 0; i < req.user.travelbooks.length; i++) {
+    if (req.user.travelbooks[i].title === req.params.title) {
+      return res.status(400).json({
+        error: "Ce titre existe déjà."
+      });
+    }
+  }
+  return res.json({ message: "rien à signaler" });
+});
+
 // Route Mytrips
 router.get("/mytrips", isAuthenticated, (req, res) => {
   // Le user verra que ses travelBook dans la liste
@@ -73,6 +88,7 @@ router.get("/mytrips", isAuthenticated, (req, res) => {
       }
     });
 });
+
 // Route Read
 router.get("/:id", isAuthenticated, (req, res) => {
   const { id } = req.params;
