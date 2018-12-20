@@ -66,7 +66,7 @@ router.get("/title/:title", isAuthenticated, (req, res) => {
   for (let i = 0; i < req.user.travelbooks.length; i++) {
     if (req.user.travelbooks[i].title === req.params.title) {
       console.log("error");
-      return res.json({
+      return res.status(400).json({
         error: "Ce titre existe déjà."
       });
     }
