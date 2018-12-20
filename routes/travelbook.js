@@ -69,6 +69,7 @@ router.get("/title/:title", isAuthenticated, (req, res) => {
       return res.status(400).json({
         error: "Ce titre existe déjà."
       });
+      break;
     }
   }
   return res.json({ message: "rien à signaler" });
