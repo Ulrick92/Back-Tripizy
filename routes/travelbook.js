@@ -23,7 +23,7 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
     end_date,
     title,
     description,
-    photos: [req.pictures[0].secure_url],
+    photos: req.pictures ? [req.pictures[0].secure_url] : undefined,
     user_id: req.user,
     steps: []
   });
@@ -60,7 +60,7 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
 
 // Route checktitle
 router.get("/title/:title", isAuthenticated, (req, res) => {
-  // Le user verra que ses travelBook dans la liste
+  // check whether the title already exists
 
   console.log("check title routes");
   for (let i = 0; i < req.user.travelbooks.length; i++) {
