@@ -7,27 +7,11 @@ const ObjectId = require("mongoose").Types.ObjectId;
 
 // Route Create
 router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
-  const {
-    start_date,
-    end_date,
-    title,
-    description,
-    current_point,
-    photos,
-    videos,
-    travelbook_id,
-    city
-  } = req.body;
+  const { start_date, end_date, travelbook_id } = req.body;
   const newStep = new StepModel({
     start_date,
     end_date,
-    title,
-    description,
-    current_point,
-    photos,
-    videos,
     travelbook_id,
-    city,
     tips: []
   });
   TravelBookModel.findById(travelbook_id)
