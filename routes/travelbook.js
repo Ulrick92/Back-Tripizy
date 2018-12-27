@@ -1,11 +1,52 @@
 const router = require("express").Router();
 const TravelBookModel = require("../models/TravelBook");
 const UserModel = require("../models/User");
+const StepModel = require("../models/Step");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const uploadPictures = require("../middlewares/uploadPictures");
 const ObjectId = require("mongoose").Types.ObjectId;
 
-// Route Create
+var getDateArray = function(start, end) {
+  //Return  an array from start (date) to end (date)
+  var arr = new Array();
+  var dt = new Date(start);
+  while (dt <= end) {
+    arr.push(new Date(dt));
+    dt.setDate(dt.getDate() + 1);
+  }
+  return arr;
+};
+function saveSteps(dateArray, index, travelBook, res) {
+  let step = new StepModel({
+    start_date: dateArray[index],
+    tips: [],
+    travelbook_id: travelBook._id
+  });
+  step.save((err, stepSave) => {
+    if (err) {
+      console.log("error 3", err.message);
+      return res.status(400).json({
+        message: "An error occurred when push step"
+      });
+    }
+    travelBook.steps.push(stepSave);
+    travelBook.save(function(err, travelBookSavedSteps) {
+      if (err) {
+        console.log("error 4 : ", err.message);
+        return res.status(400).json({
+          message: "An error occurred when saving travelbook"
+        });
+      }
+      if (index < dateArray.length - 1)
+        saveSteps(dateArray, index + 1, travelBook, res);
+      else
+        return res.json({
+          travelBook
+        });
+    });
+  });
+}
+// Route Create a travelbook
 router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
   const {
     country,
@@ -13,9 +54,14 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
     start_date,
     end_date,
     title,
-    description,
-    photos
+    description
   } = req.body;
+
+  var startDate = new Date(start_date); //YYYY-MM-DD
+  var endDate = new Date(end_date); //YYYY-MM-DD
+
+  var dateArr = getDateArray(startDate, endDate);
+
   const newTravelBook = new TravelBookModel({
     country: Number(country),
     category,
@@ -24,8 +70,7 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
     title,
     description,
     photos: req.pictures ? [req.pictures[0].secure_url] : undefined,
-    user_id: req.user,
-    steps: []
+    user_id: req.user
   });
   for (let i = 0; i < req.user.travelbooks.length; i++) {
     if (req.user.travelbooks[i].title === title) {
@@ -36,22 +81,20 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
   }
   newTravelBook.save(function(err, travelBook) {
     if (err) {
-      console.log("error", err);
-      res.status(400).json({
+      console.log("error 1 ", err);
+      return res.status(400).json({
         message: "An error occurred"
       });
     } else {
       req.user.travelbooks.push(travelBook._id);
       req.user.save(err => {
         if (err) {
-          console.log("error", err);
-          res.status(400).json({
+          console.log("error 2", err.message);
+          return res.status(400).json({
             message: "An error occurred"
           });
         } else {
-          res.json({
-            travelBook
-          });
+          saveSteps(dateArr, 0, travelBook, res);
         }
       });
     }

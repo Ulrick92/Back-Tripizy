@@ -7,6 +7,8 @@ const ObjsectId = require("mongoose").Types.ObjectId;
 
 // Route Create
 router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
+  console.log("tips publish");
+  console.log(req.body);
   const {
     category,
     company_name,
@@ -44,6 +46,11 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
   StepModel.findById(step_id)
     .populate("tips")
     .exec((err, stepfound) => {
+      if (err) {
+        console.log("err : ", err.message);
+        return res.status(400).json({ error: err.message });
+      }
+      if (!stepfound) return res.status(400).json({ error: "step not found" });
       for (let i = 0; i < stepfound.tips.length; i++) {
         if (stepfound.tips[i].company_name === company_name) {
           return res.status(400).json({
@@ -78,6 +85,7 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
 
 // Route Read
 router.get("/:id", isAuthenticated, (req, res) => {
+  console.log("service tips id : ", req.params.id);
   const { id } = req.params;
   TipsModel.findById(id).exec((err, tips) => {
     if (err) {
