@@ -5,6 +5,8 @@ const StepModel = require("../models/Step");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const uploadPictures = require("../middlewares/uploadPictures");
 const ObjectId = require("mongoose").Types.ObjectId;
+const axios = require("axios");
+const COUNTRIES = require("../src/countries.json");
 
 var getDateArray = function(start, end) {
   //Return  an array from start (date) to end (date)
@@ -61,44 +63,60 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
   var endDate = new Date(end_date); //YYYY-MM-DD
 
   var dateArr = getDateArray(startDate, endDate);
+  axios
+    .get(`https://maps.googleapis.com/maps/api/geocode/json`, {
+      params: {
+        key: process.env.GOOGLE_API_KEY,
+        address: COUNTRIES[req.body.country].label
+      }
+    })
+    .then(response => {
+      if (response.data.results.length > 0) {
+        console.log(COUNTRIES[req.body.country].label);
+        console.log(response.data.results);
+        const geometry = response.data.results[0].geometry;
+        const loc = [geometry.location.lng, geometry.location.lat];
 
-  const newTravelBook = new TravelBookModel({
-    country: Number(country),
-    category,
-    start_date,
-    end_date,
-    title,
-    description,
-    photos: req.pictures ? [req.pictures[0].secure_url] : undefined,
-    user_id: req.user
-  });
-  for (let i = 0; i < req.user.travelbooks.length; i++) {
-    if (req.user.travelbooks[i].title === title) {
-      return res.status(400).json({
-        error: "Ce travelbook a déjà été ajouté."
-      });
-    }
-  }
-  newTravelBook.save(function(err, travelBook) {
-    if (err) {
-      console.log("error 1 ", err);
-      return res.status(400).json({
-        message: "An error occurred"
-      });
-    } else {
-      req.user.travelbooks.push(travelBook._id);
-      req.user.save(err => {
-        if (err) {
-          console.log("error 2", err.message);
-          return res.status(400).json({
-            message: "An error occurred"
-          });
-        } else {
-          saveSteps(dateArr, 0, travelBook, res);
+        const newTravelBook = new TravelBookModel({
+          country: Number(country),
+          category,
+          start_date,
+          end_date,
+          title,
+          description,
+          photos: req.pictures ? [req.pictures[0].secure_url] : undefined,
+          user_id: req.user,
+          loc: loc
+        });
+        for (let i = 0; i < req.user.travelbooks.length; i++) {
+          if (req.user.travelbooks[i].title === title) {
+            return res.status(400).json({
+              error: "Ce travelbook a déjà été ajouté."
+            });
+          }
         }
-      });
-    }
-  });
+        newTravelBook.save(function(err, travelBook) {
+          if (err) {
+            console.log("error 1 ", err);
+            return res.status(400).json({
+              message: "An error occurred"
+            });
+          } else {
+            req.user.travelbooks.push(travelBook._id);
+            req.user.save(err => {
+              if (err) {
+                console.log("error 2", err.message);
+                return res.status(400).json({
+                  message: "An error occurred"
+                });
+              } else {
+                saveSteps(dateArr, 0, travelBook, res);
+              }
+            });
+          }
+        });
+      }
+    });
 });
 
 // Route checktitle
@@ -138,6 +156,10 @@ router.get("/:id", isAuthenticated, (req, res) => {
   const { id } = req.params;
   TravelBookModel.findById(id)
     .populate("steps")
+    .populate({
+      path: "steps",
+      populate: { path: "tips" }
+    })
     .exec((err, travelbook) => {
       if (err) {
         res.status(400);

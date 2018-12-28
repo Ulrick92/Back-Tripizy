@@ -40,6 +40,11 @@ const TravelBookModel = mongoose.model("TravelBook", {
   like: {
     type: Number,
     default: 0
+  },
+  loc: {
+    type: [Number], // [Longitude , latitude]
+    index: "2d",
+    default: [-85.584363, 10.260968]
   }
 });
 

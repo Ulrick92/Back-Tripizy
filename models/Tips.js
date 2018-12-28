@@ -46,6 +46,11 @@ const TipsModel = mongoose.model("Tips", {
   step_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Step"
+  },
+  loc: {
+    type: [Number], // [Longitude , latitude]
+    index: "2d",
+    default: [-85.584363, 10.260968]
   }
 });
 

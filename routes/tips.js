@@ -4,11 +4,12 @@ const StepModel = require("../models/Step");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const uploadPictures = require("../middlewares/uploadPictures");
 const ObjsectId = require("mongoose").Types.ObjectId;
+const axios = require("axios");
 
 // Route Create
 router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
   console.log("tips publish");
-  console.log(req.body);
+
   const {
     category,
     company_name,
@@ -26,60 +27,78 @@ router.post("/publish", isAuthenticated, uploadPictures, (req, res) => {
     web_site,
     step_id
   } = req.body;
-  const newTips = new TipsModel({
-    category,
-    company_name,
-    price,
-    adress,
-    city,
-    start_date,
-    end_date,
-    photos: [req.pictures[0].secure_url],
-    videos,
-    description,
-    tel,
-    email,
-    rate,
-    web_site,
-    step_id
-  });
-  StepModel.findById(step_id)
-    .populate("tips")
-    .exec((err, stepfound) => {
-      if (err) {
-        console.log("err : ", err.message);
-        return res.status(400).json({ error: err.message });
+  axios
+    .get(`https://maps.googleapis.com/maps/api/geocode/json`, {
+      params: {
+        key: process.env.GOOGLE_API_KEY,
+        address: req.body.city
       }
-      if (!stepfound) return res.status(400).json({ error: "step not found" });
-      for (let i = 0; i < stepfound.tips.length; i++) {
-        if (stepfound.tips[i].company_name === company_name) {
-          return res.status(400).json({
-            error: "Ce tips a déjà été ajouté."
-          });
-        }
-      }
-      newTips.save(function(err, tips) {
-        if (err) {
-          console.log("error", err);
-          res.status(400).json({
-            message: "An error occurred"
-          });
-        } else {
-          stepfound.tips.push(tips._id);
-          stepfound.save(err => {
+    })
+    .then(response => {
+      console.log("google api");
+      console.log(response.data);
+      if (response.data.results.length > 0) {
+        console.log(response.data.results[0].geometry);
+        const geometry = response.data.results[0].geometry;
+        const loc = [geometry.location.lng, geometry.location.lat];
+        const newTips = new TipsModel({
+          category,
+          company_name,
+          price,
+          adress,
+          city,
+          start_date,
+          end_date,
+          photos: [req.pictures[0].secure_url],
+          videos,
+          description,
+          tel,
+          email,
+          rate,
+          web_site,
+          step_id,
+          loc
+        });
+        StepModel.findById(step_id)
+          .populate("tips")
+          .exec((err, stepfound) => {
             if (err) {
-              console.log("error", err);
-              res.status(400).json({
-                message: "An error occurred"
-              });
-            } else {
-              res.json({
-                message: "Le tips a bien été ajouté."
-              });
+              console.log("err : ", err.message);
+              return res.status(400).json({ error: err.message });
             }
+            if (!stepfound)
+              return res.status(400).json({ error: "step not found" });
+            for (let i = 0; i < stepfound.tips.length; i++) {
+              if (stepfound.tips[i].company_name === company_name) {
+                return res.status(400).json({
+                  error: "Ce tips a déjà été ajouté."
+                });
+              }
+            }
+            newTips.save(function(err, tips) {
+              if (err) {
+                console.log("error", err);
+                res.status(400).json({
+                  message: "An error occurred"
+                });
+              } else {
+                stepfound.tips.push(tips._id);
+                stepfound.save(err => {
+                  if (err) {
+                    console.log("error", err);
+                    res.status(400).json({
+                      message: "An error occurred"
+                    });
+                  } else {
+                    res.json({
+                      message: "Le tips a bien été ajouté."
+                    });
+                  }
+                });
+              }
+            });
           });
-        }
-      });
+      }
     });
 });
 
