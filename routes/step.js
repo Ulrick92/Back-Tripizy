@@ -40,6 +40,7 @@ router.get("/:id", isAuthenticated, (req, res) => {
   const { id } = req.params;
   StepModel.findById(id)
     .populate("tips")
+    .populate("travelbook_id")
     .exec((err, step) => {
       if (err) {
         res.status(400);
