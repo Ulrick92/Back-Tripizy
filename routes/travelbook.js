@@ -223,17 +223,17 @@ router.get("/", isAuthenticated, (req, res) => {
   TravelBookModel.find(filter) // $ne => not equal
     .populate("user_id")
     .exec((err, travelbookfound) => {
-      const travelbooks = [];
-      for (let i = 0; i < travelbookfound.length; i++) {
-        if (travelbookfound[i].steps.length > 0) {
-          travelbooks.push(travelbookfound[i]);
-          // Le user ne verra pas ses travelBook dans la liste (ancienne méthode)
-          // if (travelbookfound[i].user_id !== req.user._id) {
-          //   travelbooks.push(travelbookfound[i]);
-          // }
-        }
-      }
-      res.json(travelbooks);
+      // const travelbooks = [];
+      // for (let i = 0; i < travelbookfound.length; i++) {
+      //   if (travelbookfound[i].steps.length > 0) {
+      //     travelbooks.push(travelbookfound[i]);
+      //     // Le user ne verra pas ses travelBook dans la liste (ancienne méthode)
+      //     // if (travelbookfound[i].user_id !== req.user._id) {
+      //     //   travelbooks.push(travelbookfound[i]);
+      //     // }
+      //   }
+      // }
+      res.json(travelbookfound);
     });
 });
 
