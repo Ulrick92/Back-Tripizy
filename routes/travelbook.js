@@ -217,7 +217,7 @@ router.get("/", isAuthenticated, (req, res) => {
   console.log("base travelbook route");
   const filter = { user_id: { $ne: req.user._id } };
   if (req.query.country) {
-    filter.country = { $regex: req.query.country, $options: "i" };
+    filter.country = req.query.country;
   }
 
   TravelBookModel.find(filter) // $ne => not equal
