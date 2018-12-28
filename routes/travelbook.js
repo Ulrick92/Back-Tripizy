@@ -215,7 +215,12 @@ router.delete("/delete/:id", isAuthenticated, (req, res) => {
 router.get("/", isAuthenticated, (req, res) => {
   // Le user ne verra pas ses travelBook dans la liste
   console.log("base travelbook route");
-  TravelBookModel.find({ user_id: { $ne: req.user._id } }) // $ne => not equal
+  const filter = { user_id: { $ne: req.user._id } };
+  if (req.query.country) {
+    filter.country = { $regex: req.query.country, $options: "i" };
+  }
+
+  TravelBookModel.find(filter) // $ne => not equal
     .populate("user_id")
     .exec((err, travelbookfound) => {
       const travelbooks = [];
