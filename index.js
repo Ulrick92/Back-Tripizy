@@ -24,7 +24,7 @@ var compression = require("compression");
 app.use(compression());
 
 mongoose.connect(
-  process.env.MONGODB_URI,
+  process.env.MONGODB_CONNECT,
   { useNewUrlParser: true, useCreateIndex: true }
 );
 
